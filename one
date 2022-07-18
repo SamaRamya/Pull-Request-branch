@@ -1,0 +1,30 @@
+function aws_s3_deployment {
+    [CmdletBinding()]
+    param (
+        [parameter(Mandatory=$true)]
+        [ValidateNotNullOrEmpty()]
+        [string]$S3Bucket,
+        [parameter(Mandatory=$true)]
+        [ValidateNotNullOrEmpty()]
+        [string]$FileName
+
+    )
+	
+	 begin {
+        Write-Host " Bucket Deployment begins for $FileName"
+    }
+    process {
+        try {
+            # Update s3 bucket
+            Write-Host $FileName
+            aws s3 cp ./$FileName.py s3://$S3Bucket/
+			
+        }
+        catch {
+            $exceptionMessage = $Error[0].Exception
+            Write-Error -Message $exceptionMessage -ErrorAction Stop
+            exit $LASTEXITCODE
+        }
+    }
+
+}
